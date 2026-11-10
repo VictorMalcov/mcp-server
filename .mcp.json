@@ -1,0 +1,13 @@
+{
+    "mcpServers": {
+        "app-expenses": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "C:/code/Learning/mcp-server/src/App.Mcp"
+            ]
+        }
+    }
+}
