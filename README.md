@@ -5,6 +5,8 @@
 `Which expense reports has Lina submitted?`
 
 
+# MCP server
+- Use camelCase when naming a server
 
 # Rules when developing tools
 
