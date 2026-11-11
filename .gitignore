@@ -44,3 +44,6 @@ coverage*.xml
 *.cache
 *.pidb
 *.svclog
+/src/App.Mcp/bin/Debug/net10.0/App.Mcp.dll
+/src/App.Mcp/bin/Debug/net10.0/App.Mcp.exe
+/src/App.Mcp/bin/Debug/net10.0/App.Mcp.pdb
