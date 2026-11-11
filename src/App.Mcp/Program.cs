@@ -1,4 +1,5 @@
 ﻿using App.Mcp.Data;
+using App.Mcp.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,14 @@ var builder = Host.CreateApplicationBuilder(args);
 // Sends every log, at every level, to stderr. This is the line that keeps stdout
 // clean for the protocol. Leave it out and your server will appear to start and then fail to connect.
 builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace);
+
+// Also write our own logs (tool calls etc.) to a .txt file next to the built exe:
+// bin/Debug/net10.0/logs/mcp-log.txt
+var logFilePath = Path.Combine(AppContext.BaseDirectory, "logs", "mcp-log.txt");
+builder.Logging.AddProvider(new FileLoggerProvider(logFilePath));
+// Only App.Mcp.* categories go to the file, so SDK/hosting noise stays out of it.
+builder.Logging.AddFilter<FileLoggerProvider>((category, level) =>
+    category is not null && category.StartsWith("App.Mcp") && level >= LogLevel.Information);
 
 builder.Services.AddSingleton<ExpenseStore>();
 

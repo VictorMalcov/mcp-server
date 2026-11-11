@@ -1,5 +1,6 @@
 ﻿using App.Mcp.Data;
 using App.Mcp.Models;
+using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
@@ -12,10 +13,12 @@ namespace App.Mcp.Tools;
 public class ExpenseTools
 {
     private readonly ExpenseStore _store;
+    private readonly ILogger<ExpenseTools> _logger;
 
-    public ExpenseTools(ExpenseStore store)
+    public ExpenseTools(ExpenseStore store, ILogger<ExpenseTools> logger)
     {
         _store = store;
+        _logger = logger;
     }
 
     // DEV note:
@@ -36,6 +39,10 @@ public class ExpenseTools
             "filter on Submitted to answer questions about what somebody has submitted.")]        
         ExpenseReportStatus? currentStatus = null)
     {
+        _logger.LogInformation(
+            "search_expense_reports called with employeeName={EmployeeName}, currentStatus={CurrentStatus}",
+            employeeName ?? "(null)", currentStatus?.ToString() ?? "(null)");
+
         IEnumerable<ExpenseReport> results = _store.Reports;
 
         if (!string.IsNullOrWhiteSpace(employeeName))
@@ -59,7 +66,9 @@ public class ExpenseTools
             report.EmployeeName = _store.Employees.FirstOrDefault(e => e.Id == report.EmployeeId)?.Name ?? string.Empty;
         }
 
-        return results.OrderByDescending(r => r.SubmittedOn).ToList();
+        var list = results.OrderByDescending(r => r.SubmittedOn).ToList();
+        _logger.LogInformation("search_expense_reports returned {Count} report(s)", list.Count);
+        return list;
     }
 
     [McpServerTool(Name = "get_expense_report")]
@@ -71,10 +80,16 @@ public class ExpenseTools
         // DEV note: 
         // McpException is the one exception type whose message reaches the caller
 
-        return _store
-            .Reports
-            .FirstOrDefault(r => r.Id == reportId)
-            ?? throw new McpException($"No expense report found with id {reportId}. Call search_expense_reports to find valid ids.");
+        _logger.LogInformation("get_expense_report called with reportId={ReportId}", reportId);
+
+        var report = _store.Reports.FirstOrDefault(r => r.Id == reportId);
+        if (report is null)
+        {
+            _logger.LogWarning("get_expense_report: no report found with id {ReportId}", reportId);
+            throw new McpException($"No expense report found with id {reportId}. Call search_expense_reports to find valid ids.");
+        }
+
+        return report;
     }
 
 
