@@ -1,5 +1,6 @@
 ﻿using App.Mcp.Data;
 using App.Mcp.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
@@ -14,11 +15,17 @@ public class ExpenseTools
 {
     private readonly ExpenseStore _store;
     private readonly ILogger<ExpenseTools> _logger;
+    private readonly string? _clientId;
 
-    public ExpenseTools(ExpenseStore store, ILogger<ExpenseTools> logger)
+    public ExpenseTools(ExpenseStore store, ILogger<ExpenseTools> logger, IConfiguration configuration)
     {
         _store = store;
         _logger = logger;
+
+        // Values from the "env" block in .mcp.json arrive as environment variables,
+        // and Host.CreateApplicationBuilder loads all environment variables into IConfiguration.
+        // (Same as Environment.GetEnvironmentVariable("clientId").)
+        _clientId = configuration["clientId"];
     }
 
     // DEV note:
@@ -40,8 +47,8 @@ public class ExpenseTools
         ExpenseReportStatus? currentStatus = null)
     {
         _logger.LogInformation(
-            "search_expense_reports called with employeeName={EmployeeName}, currentStatus={CurrentStatus}",
-            employeeName ?? "(null)", currentStatus?.ToString() ?? "(null)");
+            "search_expense_reports called by clientId={ClientId} with employeeName={EmployeeName}, currentStatus={CurrentStatus}",
+            _clientId ?? "(null)", employeeName ?? "(null)", currentStatus?.ToString() ?? "(null)");
 
         IEnumerable<ExpenseReport> results = _store.Reports;
 
@@ -80,7 +87,8 @@ public class ExpenseTools
         // DEV note: 
         // McpException is the one exception type whose message reaches the caller
 
-        _logger.LogInformation("get_expense_report called with reportId={ReportId}", reportId);
+        _logger.LogInformation("get_expense_report called by clientId={ClientId} with reportId={ReportId}",
+            _clientId ?? "(null)", reportId);
 
         var report = _store.Reports.FirstOrDefault(r => r.Id == reportId);
         if (report is null)
