@@ -20,3 +20,10 @@
 | **Tool** | The model | Automatically, in Agent mode |
 | **Resource** | You | Add Context, then Select MCP Resource |
 | **Prompt** | You | /mcp.SERVER.PROMPT |
+
+
+
+# Docs
+
+**Debug chat interactions** \
+https://code.visualstudio.com/docs/agents/agent-troubleshooting/chat-debug-view#_an-mcp-tool-is-not-being-invoked

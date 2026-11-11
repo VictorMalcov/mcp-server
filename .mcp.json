@@ -6,7 +6,7 @@
             "args": [
                 "run",
                 "--project",
-                "d:/projects/mcp/mcp-server/src/App.Mcp"
+                "c:/code/Learning/mcp-server/src/App.Mcp"
             ]
         }
     }
