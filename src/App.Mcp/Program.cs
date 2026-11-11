@@ -16,10 +16,10 @@ builder.Services.AddSingleton<ExpenseStore>();
 builder.Services
     // registers the server itself
     .AddMcpServer()
-    // configures to talk over standard input and output.
+    // configures to talk over standard input and output. `WithHttpTransport()` is another option.
     .WithStdioServerTransport()     
     // scans the assembly for [McpServerToolType] 
-    // can be explicit instead with WithTools<ExpenseTools>()
+    // can be explicit instead with `.WithTools<ExpenseTools>()`
     .WithToolsFromAssembly();
 
 

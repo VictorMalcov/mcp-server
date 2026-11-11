@@ -5,6 +5,8 @@ public class ExpenseReport
     public int Id { get; set; }
 
     public int EmployeeId { get; set; }
+    
+    public string EmployeeName { get; set; } = string.Empty;
 
     public string Title { get; set; } = string.Empty;
 
