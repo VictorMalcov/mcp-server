@@ -20,7 +20,11 @@ builder.Services
     .WithStdioServerTransport()     
     // scans the assembly for [McpServerToolType] 
     // can be explicit instead with `.WithTools<ExpenseTools>()`
-    .WithToolsFromAssembly();
+    .WithToolsFromAssembly()
+    // scans the assembly for [McpServerResourceType]
+    .WithResourcesFromAssembly()
+    // scans the assembly for ???
+    .WithPromptsFromAssembly();
 
 
 // DEV note:
