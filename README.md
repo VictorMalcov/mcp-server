@@ -4,6 +4,9 @@
 
 `Which expense reports has Lina submitted?`
 
+# Claude Code in terminal
+
+Type `@` to see list of resources that you can attach to your prompt
 
 # MCP server
 - Use camelCase when naming a server
