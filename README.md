@@ -8,6 +8,26 @@
 # MCP server
 - Use camelCase when naming a server
 
+To inspect the server response: \
+`npx @modelcontextprotocol/inspector dotnet run --project d:/projects/mcp/mcp-server/src/App.Mcp`
+
+
+**How tool is called:** \
+Claude Code sends a tools/call request:
+```
+{ 
+    "jsonrpc": "2.0", "id": 3, "method": "tools/call",
+    "params": { 
+        "name": "get_expense_report", 
+        "arguments": { 
+            "reportId": 1001 
+        } 
+    } 
+}
+```
+
+The server returns content, usually text, possibly JSON. That content is what I read.
+
 # Rules when developing tools
 
 - Good parameter naming is important. Use descriptive names for parameters, and avoid abbreviations or single-letter names.
