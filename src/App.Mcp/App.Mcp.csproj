@@ -8,12 +8,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
-		<PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+		<Compile Include="Data\ExpenseStore.cs.off" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Resources\policy.md" CopyToOutputDirectory="PreserveNewest" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
+		<PackageReference Include="ModelContextProtocol" Version="2.2.0" />
 	</ItemGroup>
 
+	
+	<ItemGroup>
+		<Content Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="Resources\policy.md" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 </Project>

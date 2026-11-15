@@ -6,8 +6,6 @@ public class ExpenseReport
 
     public int EmployeeId { get; set; }
     
-    public string EmployeeName { get; set; } = string.Empty;
-
     public string Title { get; set; } = string.Empty;
 
     public ExpenseReportStatus Status { get; set; }
