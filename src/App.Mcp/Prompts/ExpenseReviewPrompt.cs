@@ -1,5 +1,6 @@
 ﻿using App.Mcp.Data;
 using App.Mcp.Resources;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
@@ -22,10 +23,10 @@ public class ExpenseReviewPrompt
         Converters = { new JsonStringEnumConverter() }
     };
 
-    private readonly ExpenseStore _store;
+    private readonly ExpensesDbContext _store;
     private readonly ILogger<ExpenseReviewPrompt> _logger;
 
-    public ExpenseReviewPrompt(ExpenseStore store, ILogger<ExpenseReviewPrompt> logger)
+    public ExpenseReviewPrompt(ExpensesDbContext store, ILogger<ExpenseReviewPrompt> logger)
     {
         _store = store;
         _logger = logger;
@@ -33,10 +34,11 @@ public class ExpenseReviewPrompt
 
     [McpServerPrompt(Name = "review_expense_report")]
     [Description("Reviews one expense report against the App.Mcp expense policy and lists anything that breaks the rules.")]
-    public IEnumerable<PromptMessage> ReviewExpenseReport(
-        [Description("The expense report id to review, for example 1003.")] int reportId)
+    public async Task<IEnumerable<PromptMessage>> ReviewExpenseReport(
+        [Description("The expense report id to review, for example 1003.")] int reportId,
+        CancellationToken cancellationToken = default)
     {
-        var report = _store.Reports.FirstOrDefault(r => r.Id == reportId)
+        var report = await _store.Reports.AsNoTracking().FirstOrDefaultAsync(r => r.Id == reportId, cancellationToken)
             ?? throw new McpException($"No expense report found with id {reportId}.");
 
         _logger.LogInformation("[PROMPT] review_expense_report called for report {reportId}", reportId);
