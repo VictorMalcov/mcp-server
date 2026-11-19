@@ -38,7 +38,7 @@ public class ExpenseReviewPrompt
         [Description("The expense report id to review, for example 1003.")] int reportId,
         CancellationToken cancellationToken = default)
     {
-        var report = await _store.Reports.AsNoTracking().FirstOrDefaultAsync(r => r.Id == reportId, cancellationToken)
+        var report = await _store.ReportDetail(reportId).FirstOrDefaultAsync(cancellationToken)
             ?? throw new McpException($"No expense report found with id {reportId}.");
 
         _logger.LogInformation("[PROMPT] review_expense_report called for report {reportId}", reportId);
