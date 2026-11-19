@@ -1,5 +1,6 @@
 ﻿using App.Mcp.Data;
 using App.Mcp.Tools;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
@@ -25,9 +26,9 @@ public class ExpenseResources
             new JsonStringEnumConverter() 
         }
     };
-    private readonly ExpenseStore _store;
+    private readonly ExpensesDbContext _store;
 
-    public ExpenseResources(ExpenseStore store, ILogger<ExpenseResources> logger)
+    public ExpenseResources(ExpensesDbContext store, ILogger<ExpenseResources> logger)
     {
         _store = store;
         _logger = logger;
@@ -44,11 +45,13 @@ public class ExpenseResources
 
     [McpServerResource(UriTemplate = "expenses://reports/{reportId}", Name = "Expense report", MimeType = "application/json")]
     [Description("A single expense report as JSON, addressed by its id. Attach this when you already know which report you want to talk about.")]
-    public TextResourceContents GetExpenseReport(int reportId)
+    public async Task<TextResourceContents> GetExpenseReport(
+        int reportId,
+        CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("[RESOURCE] expenses://reports/{reportId} called", reportId);
 
-        var report = _store.Reports.FirstOrDefault(r => r.Id == reportId)
+        var report = await _store.ReportDetail(reportId).FirstOrDefaultAsync(cancellationToken)  //.Reports.AsNoTracking().FirstOrDefault(r => r.Id == reportId)
             ?? throw new McpException($"No expense report found with id {reportId}.");
 
         return new TextResourceContents
