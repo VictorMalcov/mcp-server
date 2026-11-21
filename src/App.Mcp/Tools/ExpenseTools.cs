@@ -53,7 +53,7 @@ public class ExpenseTools
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation(
-            "search_expense_reports called by clientId={ClientId} with employeeName={EmployeeName}, currentStatus={CurrentStatus}",
+            "\nℹ️ search_expense_reports called by clientId={ClientId} with employeeName={EmployeeName}, currentStatus={CurrentStatus}\n\n",
             _clientId ?? "(null)", employeeName ?? "(null)", currentStatus?.ToString() ?? "(null)");
 
         var query =
@@ -104,7 +104,7 @@ public class ExpenseTools
         // DEV note: 
         // McpException is the one exception type whose message reaches the caller
 
-        _logger.LogInformation("get_expense_report called by clientId={ClientId} with reportId={ReportId}",
+        _logger.LogInformation("\nℹ️ get_expense_report called by clientId={ClientId} with reportId={ReportId}\n",
             _clientId ?? "(null)", reportId);
 
         // DEV note: original code before EF and database
@@ -176,7 +176,7 @@ public class ExpenseTools
         }
 
         _logger.LogInformation(
-            "create_expense_report called for employee {EmployeeName} with title={Title}, currency={Currency}, lines={LineCount}",
+            "\nℹ️ create_expense_report called for employee {EmployeeName} with title={Title}, currency={Currency}, lines={LineCount}\n",
             matches[0].Name, title, currency, lines.Count);
 
         var report = new ExpenseReport
@@ -219,7 +219,7 @@ public class ExpenseTools
             throw new McpException($"Report {reportId} is {report.Status}, so it has already been submitted and cannot be submitted again.");
         }
 
-        _logger.LogInformation("submit_expense_report called for reportId={ReportId}", reportId);
+        _logger.LogInformation("\nℹ️ submit_expense_report called for reportId={ReportId}\n", reportId);
 
         report.Status = ExpenseReportStatus.Submitted;
         report.SubmittedOn = DateOnly.FromDateTime(DateTime.UtcNow);
