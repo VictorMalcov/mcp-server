@@ -32,18 +32,19 @@ public class ExpenseTools
 
     // DEV note:
     // [Description] attribute is not for humans. It's the only thing the model reads. 
-    //[Description("Searches expense reports by employee and by where they are in the approval workflow. Returns the matching reports with their line items.")]
-
-
-    //[Description("Searches expense reports by employee name and status. Returns every matching report with its line items.")]
     [McpServerTool(Name = "search_expense_reports")]
-    [Description("Searches expense reports by employee and by where they are in the approval workflow. Returns a summary of each match without the line items. Call get_expense_report when you need the lines.")]
+    [Description(
+        "Searches expense reports by employee and " +
+        "by where they are in the approval workflow. " +
+        "Returns a summary of each match without the line items. " +
+        "Call get_expense_report when you need the lines.")]
     public async Task<IReadOnlyList<ExpenseReportSummary>> SearchExpenseReports(
 
-        [Description("Part of an employee name, matched case insensitively. Omit to search across all employees.")]
+        [Description(
+        "Part of an employee name, matched case insensitively. " +
+        "Omit to search across all employees.")]
         string? employeeName = null,
 
-        //[Description("Only return reports in this status. Omit to return reports in any status.")]
         [Description("Where the report sits in the approval workflow right now. " +
             "Only use this when the question is about the current state. " +
             "A report that was approved or rejected was also submitted at some point, so do not " +
@@ -82,14 +83,14 @@ public class ExpenseTools
         return await query
             .OrderByDescending(x => x.Report.SubmittedOn)
             .Select(x => new ExpenseReportSummary(
-                x.Report.Id,
-                x.Report.Title,
-                x.Employee.Name,
-                x.Report.Status,
-                x.Report.Currency,
-                x.Report.TotalAmount,
-                x.Report.SubmittedOn,
-                x.Report.Lines.Count))
+                Id: x.Report.Id,
+                Title: x.Report.Title,
+                EmployeeName: x.Employee.Name,
+                Status: x.Report.Status,
+                Currency: x.Report.Currency,
+                TotalAmount: x.Report.TotalAmount,
+                SubmittedOn: x.Report.SubmittedOn,
+                LineCount: x.Report.Lines.Count))
             .ToListAsync(cancellationToken);
     }
 
@@ -128,19 +129,14 @@ public class ExpenseTools
         "ask them for it before calling this tool rather than choosing a value yourself. " +
         "The report is not submitted, so tell the user the new report id and ask whether they want it submitted, then call submit_expense_report.")]
     public async Task<ExpenseReportDetail> CreateExpenseReportAsync(
-        
         [Description("Part of the name of the employee the report belongs to. Must match exactly one employee.")]
         string employeeName,
-        
         [Description("A short title for the report, for example Berlin customer workshop.")]
         string title,
-        
         [Description("Three letter ISO 4217 code the expenses were paid in, for example EUR.")]
         string currency,
-        
         [Description("The line items on the report. At least one is required.")]
         IReadOnlyList<NewExpenseLine> lines,
-
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(title))
@@ -191,13 +187,15 @@ public class ExpenseTools
             Status = ExpenseReportStatus.Draft,
             SubmittedOn = null,
             TotalAmount = lines.Sum(line => line.Amount),
-            Lines = [.. lines.Select(line => new ExpenseLine
-        {
-            Description = line.Description.Trim(),
-            Category = line.Category.Trim(),
-            Amount = line.Amount,
-            IncurredOn = line.IncurredOn
-        })]
+            Lines = [
+                .. lines.Select(line => new ExpenseLine
+                    {
+                        Description = line.Description.Trim(),
+                        Category = line.Category.Trim(),
+                        Amount = line.Amount,
+                        IncurredOn = line.IncurredOn
+                    })
+            ]
         };
 
         _db.Reports.Add(report);
@@ -220,6 +218,8 @@ public class ExpenseTools
         {
             throw new McpException($"Report {reportId} is {report.Status}, so it has already been submitted and cannot be submitted again.");
         }
+
+        _logger.LogInformation("submit_expense_report called for reportId={ReportId}", reportId);
 
         report.Status = ExpenseReportStatus.Submitted;
         report.SubmittedOn = DateOnly.FromDateTime(DateTime.UtcNow);

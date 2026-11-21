@@ -35,6 +35,10 @@ public class FrankfurterClient(HttpClient http)
     }
 }
 
-public record FrankfurterRate(DateOnly Date, string Base, string Quote, decimal Rate);
+public record FrankfurterRate(
+    DateOnly Date, 
+    string Base, 
+    string Quote, 
+    decimal Rate);
 
 public record FrankfurterError(int Status, string Message);
