@@ -38,7 +38,7 @@ public class ExpenseResources
     [Description("The App.Mcp expense policy. Attach this when you need to judge whether a report follows company rules.")]
     public string GetExpensePolicy()
     {
-        _logger.LogInformation("[RESOURCE] expenses://policy called");
+        _logger.LogInformation("\nℹ️ [RESOURCE] expenses://policy called\n");
 
         return PolicyText.Value;
     }
@@ -49,7 +49,7 @@ public class ExpenseResources
         int reportId,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("[RESOURCE] expenses://reports/{reportId} called", reportId);
+        _logger.LogInformation("\nℹ️ [RESOURCE] expenses://reports/{reportId} called\n", reportId);
 
         var report = await _store.ReportDetail(reportId).FirstOrDefaultAsync(cancellationToken)  //.Reports.AsNoTracking().FirstOrDefault(r => r.Id == reportId)
             ?? throw new McpException($"No expense report found with id {reportId}.");

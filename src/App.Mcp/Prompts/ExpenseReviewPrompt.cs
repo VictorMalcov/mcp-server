@@ -41,7 +41,7 @@ public class ExpenseReviewPrompt
         var report = await _store.ReportDetail(reportId).FirstOrDefaultAsync(cancellationToken)
             ?? throw new McpException($"No expense report found with id {reportId}.");
 
-        _logger.LogInformation("[PROMPT] review_expense_report called for report {reportId}", reportId);
+        _logger.LogInformation("\nℹ️ [PROMPT] review_expense_report called for report {reportId}\n", reportId);
 
         // DEV note:
         // a prompt returns messages. Here we return 3 messages: the instructions, the policy, and the report data.
