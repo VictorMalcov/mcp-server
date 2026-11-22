@@ -41,7 +41,7 @@ public class CurrencyTools
         {
             var rate = await _client.GetRateAsync(from, to, onDate, cancellationToken);
             _logger.LogInformation(
-                "convert_currency called for {Amount} {From} to {To} on {OnDate}, got rate {Rate} on {RateDate}",
+                "\nℹ️ convert_currency called for {Amount} {From} to {To} on {OnDate}, got rate {Rate} on {RateDate}\n",
                 amount, from, to, onDate?.ToString("yyyy-MM-dd") ?? "(latest)", rate.Rate, rate.Date.ToString("yyyy-MM-dd"));
 
             return new CurrencyConversion(
