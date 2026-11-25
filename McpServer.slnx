@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/App.Mcp/App.Mcp.csproj" />
+    <Project Path="src/BitOfTech.Expenses.Agent/BitOfTech.Expenses.Agent.csproj" />
   </Folder>
 </Solution>
